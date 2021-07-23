@@ -1,0 +1,379 @@
+<!-- templates/home.html -->
+{% extends 'base.html' %}
+
+{% block head %}
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body {
+            height: 100%;
+            width: 100%;                        
+        }
+        #map{
+            height: 100%;
+            width: 100%;
+        }
+        .navbar{
+            position: absolute;
+            z-index: 2;
+            width: 100%;
+        }
+        #attitude{
+            position: absolute;
+            z-index: 2;
+            padding-top: 60px;
+            padding-left: 0px;
+        }
+
+        .table{
+            opacity: 0.8;
+            position: relative;
+            z-index: 2;
+            padding-right: 0px;
+            margin-top:100px
+            
+        }
+        
+        .bgimg-1, .bgimg-2, .bgimg-3 {
+        position: relative;
+        opacity: 0.65;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+
+        }
+        .bgimg-1 {
+        background-image: url("https://wallpapercave.com/wp/wp1896534.jpg");
+        height: 100%;
+        }
+
+        .caption {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        width: 100%;
+        text-align: center;
+        color: #000;
+        }
+
+        .caption span.border {
+        background-color: #111;
+        color: #fff;
+        padding: 18px;
+        font-size: 25px;
+        letter-spacing: 10px;
+        }
+
+        h3 {
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        font: 20px "Lato", sans-serif;
+        color: #111;
+        }
+        
+    </style>
+{% endblock head %}
+
+{% block header %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">DornaWing</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">                
+                {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {{ user.username }}
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="{% url 'logout' %}">Log Out</a></li>                       
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a id='connection_state' class="nav-link active" aria-current="page" href="#" onclick='ws_func()'>Connect</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'signup' %}">Sign Up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="{% url 'login' %}">Log In</a>
+                </li>
+                {% endif %}                
+            </ul>  
+
+            <button id='armBtn' class="btn btn-outline-success m-1">Arm</button>
+            <button id='disarmBtn' class="btn btn-outline-danger m-1">Disarm</button>
+            <button class="btn btn-outline-success m-1" onclick="cmd_send()">RTL</button>
+            <button class="btn btn-outline-success m-1" onclick="cmd_send()">Start Mission</button>
+            <button class="btn btn-outline-success m-1" onclick="cmd_send()">Stop Mission</button>
+
+            </div>
+        </div>
+    </nav>
+{% endblock header %}
+{% block content %}
+    {% if user.is_authenticated %}
+        
+        {% comment %} <span id="heading"></span>
+        <span id="airspeed"></span> {% endcomment %}
+        <div id="map">
+            <div class="container-fluid">            
+                <div class="row">
+                    <div class="col-3"><span id="attitude"></span></div>
+                    <div class="col-7">col-4</div>
+                    <div class="col-2">
+                        <table class="table table-dark">
+
+                            <thead>
+                                <tr>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Value</th>                                
+                                </tr>
+                            </thead> 
+
+                            <tbody>                                
+                                <tr>
+                                    <th scope="row">Altitude</th>
+                                    <td id='alt'>Mark</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Vertical Speed</th>
+                                    <td id='vertical_speed'>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Airspeed</th>
+                                    <td id='airspeed'>Mark</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Channel 1</th>
+                                    <td id='chan_1'>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Channel 2</th>
+                                    <td id='chan_2'>Mark</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Channel  3</th>
+                                    <td id='chan_3'>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Channel 4</th>
+                                    <td id='chan_4'>Mark</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Channel 5</th>
+                                    <td id='chan_5'>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Channel 6</th>
+                                    <td id='chan_6'>Mark</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Channel 7</th>
+                                    <td id='chan_7'@mdo</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Channel 8</th>
+                                    <td id='chan_8'>Mark</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Vibration X</th>
+                                    <td id='vibration_x'>@mdo</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Vibration Y</th>
+                                    <td id='vibration_y'>Mark</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Vibration Z</th>
+                                    <td id='vibration_z'>@mdo</td>
+                                </tr>                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>                
+        </div>
+    
+        
+        <script src="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.js"></script>
+
+        <script>
+            
+
+            var ws_cmd = new WebSocket("ws://127.0.0.1:9090/cmd/"); //192.168.1.9
+            
+
+            window.onbeforeunload = sendTimeToServer;
+                function sendTimeToServer() {
+                   ws_cmd.send('end');
+                }
+
+
+            document.getElementById("armBtn").addEventListener("click", function(){
+                    var data = {
+                        arm_state : 1,                        
+                        rtl : 'false',
+                        start: 'false',
+                        stop: 'false',
+                    }
+                    
+                    data_json = JSON.stringify(data)
+                    ws_cmd.send(data_json);
+
+                    document.getElementById("armBtn").disabled = true;
+                    document.getElementById("disarmBtn").disabled = false;
+                    
+                });
+
+            document.getElementById("disarmBtn").addEventListener("click", function(){
+                    var data = {
+                        arm_state : 0,                        
+                        rtl : 'false',
+                        start: 'false',
+                        stop: 'false',
+                    }
+                    
+                    data_json = JSON.stringify(data)
+                    ws_cmd.send(data_json);
+
+                    document.getElementById("armBtn").disabled = false;
+                    document.getElementById("disarmBtn").disabled = true;
+                   
+                });
+            
+            ws_cmd.onclose = function(event) {
+                console.log("WebSocket is closed now.");
+            };
+
+            function ws_func(){
+                var ws = new ReconnectingWebSocket("ws://127.0.0.1:9090/");//192.168.1.9
+
+                /*
+                Constant	            Value
+                WebSocket.CONNECTING	0
+                WebSocket.OPEN	        1
+                WebSocket.CLOSING	    2
+                WebSocket.CLOSED	    3 
+                */
+                var map = L.map('map',{zoomControl: false}).setView([35.6892, 51.3890], 14);
+
+                L.control.zoom({
+                    position: 'bottomleft'
+                }).addTo(map);
+
+                mapLink = 
+                    '<a href="http://www.esri.com/">Esri</a>';
+                wholink = 
+                    'i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community';
+                L.tileLayer(
+                    'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                    attribution: '&copy; '+mapLink+', '+wholink,
+                    maxZoom: 18,
+                    }).addTo(map);
+
+                var a = document.getElementById("connection_state");
+                
+
+                
+
+                console.log('Connected!')
+                a.innerHTML = "Disconnect";
+                
+                
+                var greenIcon = L.icon({
+                    iconUrl: '/static/map/img/QGCLogoFull.png',
+
+                    iconSize:     [40, 40], // size of the icon
+                            
+                    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+                            
+                    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+                });          
+                
+                
+                var marker
+                marker = L.marker([35.6892, 51.3890], {icon: greenIcon}).addTo(map);
+
+                
+
+                ws.onmessage = function(event) {  
+                    var alt = document.getElementById("alt");
+                    var vertical_speed = document.getElementById("vertical_speed");
+                    var airspeed = document.getElementById("airspeed");
+                    var chan_1 = document.getElementById("chan_1");
+                    var chan_2 = document.getElementById("chan_2");
+                    var chan_3 = document.getElementById("chan_3");
+                    var chan_4 = document.getElementById("chan_4");
+                    var chan_5 = document.getElementById("chan_5");
+                    var chan_6 = document.getElementById("chan_6");
+                    var chan_7 = document.getElementById("chan_7");
+                    var chan_8 = document.getElementById("chan_8");
+                    var vibration_x = document.getElementById("vibration_x");
+                    var vibration_y = document.getElementById("vibration_y");
+                    var vibration_z = document.getElementById("vibration_z");       
+
+                    msg = JSON.parse(event.data)
+                    
+
+                    alt.innerHTML = msg.alt;
+                    vertical_speed.innerHTML = msg.velocity_variance;
+                    airspeed.innerHTML = msg.airspeed;
+                    chan_1.innerHTML = msg.servo1_raw;
+                    chan_2.innerHTML = msg.servo2_raw;
+                    chan_3.innerHTML = msg.servo3_raw;
+                    chan_4.innerHTML = msg.servo4_raw;
+                    chan_5.innerHTML = msg.servo5_raw;
+                    chan_6.innerHTML = msg.servo6_raw;
+                    chan_7.innerHTML = msg.servo7_raw;
+                    chan_8.innerHTML = msg.servo8_raw;
+                    vibration_x.innerHTML = msg.vibration_x;
+                    vibration_y.innerHTML = msg.vibration_y;
+                    vibration_z.innerHTML = msg.vibration_z;
+
+                    var attitude = $.flightIndicator('#attitude', 'attitude', {roll:msg.roll * 50, pitch:msg.pitch * 50, size:300, showBox : false});
+
+                    ws.onclose = function() {
+                        console.log("Disconnect!")
+                    }
+                    /*var lat = msg.lat;
+                    var lng = msg.lng;
+                    var newLatLng = new L.LatLng(lat, lng);
+                    marker.setLatLng(newLatLng).update();    */                                                                         
+                };
+
+                                                                  
+            }
+            
+            
+            {% comment %} ws.onclose= function(event){
+                console.log('Connection closed');
+            };  {% endcomment %}
+                    
+            {% comment %} 
+            var map = L.map('map').setView([-41.2858, 174.78682], 14);
+            mapLink = 
+                '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+            L.tileLayer(
+                'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; ' + mapLink + ' Contributors',
+                maxZoom: 18,
+                }).addTo(map);
+                {% endcomment %}
+        </script>
+    {% else %}
+        <div class="bgimg-1">
+            <div class="caption">
+                <span class="border">Control Your Drone across the world</span><br><br>
+                <span class="border">Sign Up Now!</span>
+
+            </div>
+        </div>
+    {% endif %}
+{% endblock content %}
