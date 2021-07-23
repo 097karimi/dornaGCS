@@ -19,3 +19,7 @@ The project is still under development and we would love to have more developers
  
  - run
    - ./manage.py runserver 9090
+
+# To do
+[] Using vue js as frontend instead of django templates
+[] using Django Rest Framework to add an API for mobile app
