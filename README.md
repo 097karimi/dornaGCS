@@ -4,7 +4,7 @@
 
 The project is still under development and we would love to have more developers joining us!
 
-***In order to use this project you need to receive data from your PixHawk so you have to use another project for this purpose***
+***In order to use this project you need to receive data from your PixHawk and send it to DornaGCS through websocket, so you have to use another project for this purpose which I'll put its link down below***
 
 # Installation
 
