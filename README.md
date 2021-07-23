@@ -4,7 +4,7 @@
 
 The project is still under development and we would love to have more developers joining us!
 
-![GCS Picture](https://ibb.co/nfBNLdF)
+![GCS Picture](https://i.ibb.co/RPNkDrq/GCS-Picture.png)
 
 ***In order to use this project you need to receive data from your PixHawk and send it to DornaGCS through websocket, so you have to use another project for this purpose which I'll put its link down below***
 
