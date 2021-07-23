@@ -4,6 +4,8 @@
 
 The project is still under development and we would love to have more developers joining us!
 
+![GCS Picture](https://ibb.co/nfBNLdF)
+
 ***In order to use this project you need to receive data from your PixHawk and send it to DornaGCS through websocket, so you have to use another project for this purpose which I'll put its link down below***
 
 https://github.com/097karimi/Send-and-Receive-Data-From-PX-To-Server
